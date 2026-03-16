@@ -1,11 +1,19 @@
+import os
 from flask import Flask, request, jsonify, render_template
 from models import db, Usuario, Assinatura, LogVerificacao
 from crypto_web import *
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///assinador.db'
-db.init_app(app)
+# Pega o caminho da pasta onde o app.py está (que é a pasta /backend)
+basedir = os.path.abspath(os.path.dirname(__file__))
 
+app = Flask(__name__)
+
+# Define o caminho do banco EXATAMENTE dentro de backend/instance/
+# Se a pasta instance não existir, o SQLite criará o arquivo lá se a pasta for criada manualmente
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'instance', 'assinador.db')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db.init_app(app)
 @app.route('/')
 def index():
     return render_template('index.html')
