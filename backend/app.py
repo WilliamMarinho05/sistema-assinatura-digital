@@ -1,16 +1,21 @@
 import os
 from flask import Flask, request, jsonify, render_template
+from sqlalchemy import text
 from models import db, Usuario, Assinatura, LogVerificacao
 from crypto_web import *
 
 basedir = os.path.abspath(os.path.dirname(__file__))
+instance_path = os.path.join(basedir, 'instance')
+
+if not os.path.exists(instance_path):
+    os.makedirs(instance_path)
 
 app = Flask(__name__)
-
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'instance', 'assinador.db')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(instance_path, 'assinador.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -32,11 +37,10 @@ def cadastro():
     return jsonify({"message": "Usuário criado!"}), 201
 
 @app.route('/assinar', methods=['POST'])
-
-@app.route('/assinar', methods=['POST'])
 def assinar():
     data = request.json 
     user = Usuario.query.filter_by(username=data['username']).first()
+    if not user: return jsonify({"error": "Usuário não encontrado"}), 404
     
     assinatura_hex = assinar_texto(data['texto'], user.chave_privada)
     
@@ -45,7 +49,6 @@ def assinar():
         assinatura_hash=assinatura_hex, 
         usuario_id=user.id,
     )
-    
     db.session.add(nova_ass)
     db.session.commit()
     
@@ -68,8 +71,38 @@ def verificar_rota(id):
     db.session.add(log)
     db.session.commit()
     
-    return jsonify({"status": resultado, "signatario": user.username, "algoritmo": "RSA-PSS-SHA256", "data": ass.data_criacao})
+    return jsonify({
+        "status": resultado, 
+        "signatario": user.username, 
+        "algoritmo": "RSA-PSS-SHA256", 
+        "data": ass.data_criacao
+    })
+
+def importar_dump_automatico():
+    raiz_projeto = os.path.dirname(basedir)
+    caminhos = [
+        os.path.join(raiz_projeto, 'dump_banco.sql'),
+        os.path.join(basedir, 'dump_banco.sql'),
+        'dump_banco.sql'
+    ]
+    
+    path_sql = next((p for p in caminhos if os.path.exists(p)), None)
+
+    if path_sql:
+        try:
+            if Usuario.query.count() == 0:
+                with open(path_sql, 'r', encoding='utf-8') as f:
+                    conteudo = f.read()
+                    for linha in conteudo.split(';'):
+                        if linha.strip() and not linha.strip().startswith('--'):
+                            db.session.execute(text(linha))
+                    db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            print(f"Erro: {e}")
 
 if __name__ == '__main__':
-    with app.app_context(): db.create_all()
+    with app.app_context():
+        db.create_all()
+        importar_dump_automatico()
     app.run(host='0.0.0.0', port=5000)
