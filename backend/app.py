@@ -3,13 +3,10 @@ from flask import Flask, request, jsonify, render_template
 from models import db, Usuario, Assinatura, LogVerificacao
 from crypto_web import *
 
-# Pega o caminho da pasta onde o app.py está (que é a pasta /backend)
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
 
-# Define o caminho do banco EXATAMENTE dentro de backend/instance/
-# Se a pasta instance não existir, o SQLite criará o arquivo lá se a pasta for criada manualmente
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'instance', 'assinador.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -35,22 +32,18 @@ def cadastro():
     return jsonify({"message": "Usuário criado!"}), 201
 
 @app.route('/assinar', methods=['POST'])
-# No seu app.py, ajuste a rota /assinar para ficar assim:
+
 @app.route('/assinar', methods=['POST'])
 def assinar():
-    data = request.json # Contém o 'texto' enviado pelo textarea
+    data = request.json 
     user = Usuario.query.filter_by(username=data['username']).first()
     
-    # 1. O cálculo do Hash SHA-256 ocorre dentro da função assinar_texto
-    # 2. A assinatura é gerada com a chave privada
     assinatura_hex = assinar_texto(data['texto'], user.chave_privada)
     
-    # 3. Metadados são gerados aqui no momento da persistência
     nova_ass = Assinatura(
         texto=data['texto'], 
         assinatura_hash=assinatura_hex, 
         usuario_id=user.id,
-        # O banco de dados gera o metadado 'data_criacao' automaticamente
     )
     
     db.session.add(nova_ass)
@@ -58,7 +51,7 @@ def assinar():
     
     return jsonify({
         "id": nova_ass.id, 
-        "hash_usado": "SHA-256", # Metadado enviado ao front
+        "hash_usado": "SHA-256", 
         "assinatura": assinatura_hex
     })
 
