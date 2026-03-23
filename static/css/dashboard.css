@@ -1,0 +1,101 @@
+/* 1. Dashboard Grid */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 3fr 1fr; /* Main content 3x a sidebar 1x */
+    gap: 24px;
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 20px 40px;
+    align-items: start;
+}
+
+/* 2. Conteúdo principal */
+.content-area {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+.content-area .card {
+    width: 100%;
+    max-width: 100%; 
+    overflow-x: hidden; 
+}
+
+/* Result box dentro da assinatura */
+.result-box {
+    margin-top: 20px;
+    padding: 1.5rem;
+    background: #f0fdf4;
+    border: 1px solid var(--success-green);
+    border-radius: 8px;
+
+    max-width: 100%;
+    word-wrap: break-word;  
+    overflow-wrap: break-word; 
+}
+.result-box .hash-text {
+    word-break: break-all; 
+    white-space: pre-wrap; 
+    color: var(--text-muted);  
+}
+
+/* Sidebar */
+.sidebar-info {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Cards do sidebar */
+.profile-card, .help-card {
+    padding: 1.5rem;
+}
+
+/* Avatar + nome de usuário */
+.user-badge {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1rem;
+}
+
+/* Pequenos ajustes de botões no sidebar */
+.side-actions .btn {
+    font-size: 0.85rem;
+    padding: 0.6rem;
+}
+
+/* Divider */
+.divider {
+    border: none;
+    border-top: 1px solid var(--border-color);
+    margin: 1rem 0;
+}
+
+/* Lista de ajuda */
+.help-list {
+    list-style: disc;
+    padding-left: 1rem;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+/* Scroll horizontal para tabelas grandes */
+.content-area table {
+    width: 100%;
+    overflow-x: auto;
+}
+
+/* Responsividade para mobile */
+@media (max-width: 900px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr; /* Coluna única no mobile */
+    }
+
+    .sidebar-info {
+        flex-direction: row;
+        overflow-x: auto;
+        gap: 12px;
+    }
+}

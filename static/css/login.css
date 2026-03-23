@@ -1,0 +1,63 @@
+/* 1. Layout da página de autenticação */
+.auth-wrapper {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+    background-color: var(--bg-light); /* usa a cor global */
+}
+
+.container-auth {
+    width: 100%;
+    max-width: 420px; /* largura padrão do formulário */
+}
+
+/* 2. Cabeçalho do formulário */
+.auth-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    width: 100%;
+}
+
+.auth-header h1 {
+    color: var(--primary-blue); /* usa cor global */
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+/* 3. Formulário */
+.form-group {
+    margin-bottom: 1.2rem;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+/* inputs e textarea herdam do global */
+input:focus, textarea:focus {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* 4. Botões */
+.grid-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 1rem;
+}
+
+/* 5. Rodapé do formulário */
+.auth-footer {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+    text-align: center;
+}

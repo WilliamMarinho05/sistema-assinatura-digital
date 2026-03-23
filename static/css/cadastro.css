@@ -1,0 +1,129 @@
+/* Container centralizado para cadastro */
+.auth-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    background-color: var(--bg-light);
+}
+
+.container-auth {
+    width: 100%;
+    max-width: 500px;
+}
+
+/* Card do cadastro */
+.card {
+    background-color: var(--white);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Cabeçalho do card */
+.auth-header h1 {
+    text-align: center;
+    font-size: 1.6rem;
+    color: var(--text-dark);
+}
+
+.auth-header p {
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+/* Inputs */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group input {
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.2s ease-in-out;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* Botões */
+.btn-primary {
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 8px;
+    font-weight: 600;
+    background-color: var(--primary-blue);
+    color: var(--white);
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: var(--secondary-blue);
+}
+
+.btn-outline {
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    border: 2px solid var(--primary-blue);
+    color: var(--primary-blue);
+    transition: all 0.3s;
+}
+
+.btn-outline:hover {
+    background-color: #f1f5f9;
+}
+
+.btn-success-outline {
+    border-color: var(--success-green);
+    color: var(--success-green);
+}
+
+.btn-success-outline:hover {
+    background-color: rgba(16, 185, 129, 0.1);
+}
+
+/* Mensagem de feedback */
+#cad-msg {
+    text-align: center;
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+    color: var(--text-dark);
+}
+
+/* Footer do card */
+.auth-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.auth-footer span {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.grid-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}

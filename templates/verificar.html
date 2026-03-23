@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validar Assinatura - Público</title>
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/verificar.css') }}">
+</head>
+<body>
+
+    <div class="container-auth">
+        <div class="card">
+            <h1>Verificador Público</h1>
+            <p>Insira o ID da assinatura para verificar a integridade, o signatário, o algoritmo e a data/hora do documento.</p>
+
+            <div class="form-group">
+                <label for="sig-id">ID da Assinatura</label>
+                <div>
+                    <input type="number" id="sig-id" placeholder="Ex: 101">
+                    <button class="btn btn-primary" onclick="verificar()">Verificar</button>
+                </div>
+            </div>
+
+            <div id="resultado-container">
+                <!-- Status -->
+                <div class="status-wrapper">
+                    <span id="status-badge" class="status-badge"></span>
+                </div>
+
+                <!-- Informações da assinatura -->
+                <div class="info-verificacao">
+                    <div><strong>Signatário:</strong> <span id="res-autor"></span></div>
+                    <div><strong>Algoritmo:</strong> <span id="res-algoritmo"></span></div>
+                    <div><strong>Data/Hora:</strong> <span id="res-data"></span></div>
+                </div>
+
+                <div class="form-group">
+                    <label>Hash da Assinatura:</label>
+                    <textarea id="res-hash" readonly></textarea>
+                </div>
+
+                <!-- Documento -->
+                <div class="form-group">
+                    <label>Conteúdo do Documento:</label>
+                    <textarea id="res-texto" readonly></textarea>
+                </div>
+            </div>
+
+            <p id="error-msg"></p>
+
+            <div style="margin-top: 2rem; text-align: center;">
+                <a href="/" class="btn-link">← Voltar ao Início</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function verificar() {
+            const id = document.getElementById('sig-id').value;
+            const container = document.getElementById('resultado-container');
+            const errorMsg = document.getElementById('error-msg');
+
+            if (!id) {
+                errorMsg.innerText = "⚠️ Digite um ID válido.";
+                return;
+            }
+
+            try {
+                const response = await fetch(`/verify/${id}`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    errorMsg.innerText = "";
+                    container.style.display = "flex";
+
+                    // Preenche informações
+                    document.getElementById('res-texto').value = data.documento;
+                    document.getElementById('res-autor').textContent = data.autor;
+                    document.getElementById('res-algoritmo').textContent = data.algoritmo || "RSA-2048";
+                    document.getElementById('res-data').textContent = data.data;
+                    document.getElementById('res-hash').value = data.hash;
+
+                    const badge = document.getElementById('status-badge');
+                    if (data.status === "VÁLIDA") {
+                        badge.innerText = "✓ Assinatura Válida";
+                        badge.className = "status-badge status-valid";
+                    } else {
+                        badge.innerText = "✗ Assinatura Inválida";
+                        badge.className = "status-badge status-invalid";
+                    }
+                } else {
+                    container.style.display = "none";
+                    errorMsg.innerText = "❌ Assinatura não encontrada no banco.";
+                }
+            } catch (error) {
+                errorMsg.innerText = "❌ Erro ao conectar com o servidor.";
+            }
+        }
+    </script>
+</body>
+</html>

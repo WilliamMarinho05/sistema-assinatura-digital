@@ -1,0 +1,140 @@
+/* GRID DAS CHAVES */
+.key-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* CONTAINER */
+.key-container {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+/* TEXTAREA DAS CHAVES (ISOLADO DO RESTO DO SISTEMA) */
+.key-area {
+    font-family: 'Courier New', monospace;
+    font-size: 0.75rem;
+    background: var(--bg-light);
+    resize: none;
+    height: 180px;
+
+    width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    white-space: pre;
+}
+/* 1. Grid principal da página de chaves */
+.key-grid {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 20px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* 2. Subtítulos dentro dos cards */
+.card h2 {
+    margin-bottom: 0.5rem;
+    color: var(--text-dark);
+}
+
+.card .subtitle {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+
+/* 3. Container das chaves: lado a lado */
+.dashboard-grid {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap; /* permite quebrar no mobile */
+}
+
+/* Cada container de chave */
+.key-container {
+    flex: 1; /* mesma largura para cada chave */
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Labels das chaves */
+.key-container label {
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+/* Textarea das chaves */
+.key-area {
+    font-family: 'Courier New', monospace;
+    font-size: 0.75rem;
+    background: #f1f5f9;
+    resize: none;
+    height: 180px;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    width: 100%;
+    overflow-wrap: break-word;   /* quebra linhas longas */
+    word-break: break-all;
+}
+
+/* Botões de download de chave */
+.key-container .btn {
+    width: 100%;
+    font-size: 0.85rem;
+    padding: 0.6rem;
+}
+
+/* 4. Tabela do diretório público de chaves */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    overflow-x: auto; /* tabela scrollável se necessário */
+}
+
+thead th {
+    text-align: left;
+    padding: 12px;
+    border-bottom: 2px solid var(--bg-light);
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+}
+
+tbody td {
+    padding: 12px;
+    border-bottom: 1px solid var(--bg-light);
+    font-size: 0.85rem;
+}
+
+tbody tr:hover {
+    background: #f8fafc;
+}
+
+tbody td b {
+    color: var(--text-dark);
+}
+
+/* Botão baixar pública dentro da tabela */
+tbody td a.btn {
+    padding: 5px 10px;
+    font-size: 0.75rem;
+    display: inline-block;
+    width: auto;
+}
+
+/* 5. Responsividade */
+@media (max-width: 900px) {
+    .dashboard-grid {
+        flex-direction: column; /* chaves empilhadas no mobile */
+    }
+
+    .key-container {
+        width: 100%;
+    }
+}

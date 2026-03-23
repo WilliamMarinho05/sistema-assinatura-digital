@@ -1,0 +1,137 @@
+/* Container centralizado */
+.container-auth {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    background-color: var(--bg-light);
+}
+
+/* Card principal */
+.container-auth .card {
+    max-width: 600px;
+    width: 100%;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    background-color: var(--white);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Título */
+.container-auth h1 {
+    text-align: center;
+    font-size: 1.6rem;
+    color: var(--text-dark);
+}
+
+/* Subtítulo / instruções */
+.container-auth p {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    text-align: center;
+}
+
+/* Formulário de ID */
+.container-auth .form-group label {
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Input + botão lado a lado */
+.container-auth .form-group div {
+    display: flex;
+    gap: 10px;
+}
+
+/* Resultado da verificação */
+#resultado-container {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid var(--border-color);
+    display: none;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* Status da assinatura */
+.status-wrapper {
+    text-align: center;
+}
+#resultado-container .status-badge {
+    display: inline-block;
+    font-size: 1rem;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-weight: bold;
+}
+
+/* Informações da assinatura */
+.info-verificacao {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    font-size: 0.9rem;
+    color: #475569;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* Textarea do documento */
+#res-texto {
+    width: 100%;
+    height: 180px;
+    resize: none;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    background-color: #f1f5f9;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.75rem;
+}
+
+/* Mensagem de erro */
+#error-msg {
+    text-align: center;
+    color: #e11d48;
+    font-size: 0.85rem;
+    margin-top: 1rem;
+}
+
+/* Link de voltar */
+.container-auth a {
+    text-decoration: none;
+    color: var(--primary-blue);
+    font-weight: 600;
+    font-size: 0.85rem;
+    display: inline-block;
+    text-align: center;
+}
+
+/* Responsividade */
+@media (max-width: 500px) {
+    .info-verificacao {
+        grid-template-columns: 1fr; /* Colunas empilhadas no mobile */
+    }
+}
+
+/* Textarea do hash da assinatura */
+#res-hash {
+    width: 100%;
+    height: auto; /* altura automática */
+    min-height: 80px; /* altura mínima para ficar visível */
+    max-height: 200px; /* opcional, evita ficar gigante */
+    resize: vertical; /* usuário pode ajustar se quiser */
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    background-color: #f1f5f9;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.75rem;
+    overflow-wrap: break-word;
+    white-space: pre-wrap; /* mantém quebras de linha */
+}

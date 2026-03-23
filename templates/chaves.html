@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Diretório de Chaves - Assinador RSA</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/chaves.css') }}">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <span class="logo">Assinador RSA</span>
+            <div class="user-info">
+                <a href="/dashboard" style="margin-right: 20px; text-decoration: none; color: var(--primary-blue);">← Painel de Assinatura</a>
+                <a href="/logout" class="btn-logout">Sair</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class= "key-grid">
+        
+        <section class="card">
+            <h2>Minha Identidade Criptográfica</h2>
+            <p class="subtitle">Abaixo estão suas chaves. A <b>Privada</b> é o seu segredo para assinar.</p>
+            
+            <div class="dashboard-grid">
+                <div class="key-container">
+                    <label style="color: #2563eb;">Sua Chave Pública (Compartilhável)</label>
+                    <textarea readonly class="key-area">{{ atual.chave_publica }}</textarea>
+                    <a href="/download-chave/publica" target="_blank" class="btn btn-outline">Baixar .PEM</a>
+
+                </div>
+                <div class="key-container">
+                    <label style="color: #e11d48;">Sua Chave Privada (SEGREDO)</label>
+                    <textarea readonly class="key-area">{{ atual.chave_privada }}</textarea>
+                    <a href="/download-chave/privada" target="_blank" class="btn btn-outline btn-danger-outline">Baixar .PEM</a>
+
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Diretório Público de Chaves</h2>
+            <p class="subtitle">Baixe a chave pública de outros usuários para verificar os documentos deles.</p>
+
+            <div style="margin-top: 20px; overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="text-align: left; border-bottom: 2px solid #f1f5f9;">
+                            <th style="padding: 12px;">Usuário</th>
+                            <th style="padding: 12px;">Identificador da Chave Pública</th>
+                            <th style="padding: 12px; text-align: center;">Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in usuarios %}
+                        <tr style="border-bottom: 1px solid #f1f5f9;">
+                            <td style="padding: 12px;"><b>{{ user.username }}</b> {% if user.id == session['user_id'] %} (Você) {% endif %}</td>
+                            <td style="padding: 12px; font-family: monospace; font-size: 0.7rem; color: #64748b;">
+                                {{ user.chave_publica[:80] }}...
+                            </td>
+                            <td style="padding: 12px; text-align: center;">
+                                <a href="/download-chave-publica-outros/{{ user.id }}" target="_blank" class="btn btn-outline">Baixar Pública</a>
+                                    Baixar Pública
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+</body>
+</html>

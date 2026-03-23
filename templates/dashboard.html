@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Controle - Assinador RSA</title>
+    
+    <!-- CSS Global -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- CSS Dashboard -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <span class="logo">ASSINADOR <span>RSA</span></span>
+            <div class="nav-links">
+                <a href="/dashboard" class="active">🏠 Início</a>
+                <a href="/chaves">🔑 Diretório de Chaves</a>
+                <a href="/verificar">🔍 Validar Público</a>
+                <a href="/logout" class="btn-logout-link">Sair</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard Grid -->
+    <div class="dashboard-grid">
+
+        <!-- Conteúdo principal -->
+        <main class="content-area">
+            <!-- Card: Assinar Documento -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>🖋️ Assinar Novo Documento</h2>
+                    <p>O texto inserido será processado com sua chave privada.</p>
+                </div>
+
+                <div class="form-group">
+                    <textarea id="texto-assinatura" placeholder="Cole aqui o conteúdo do contrato ou documento..." rows="10"></textarea>
+                </div>
+
+                <button class="btn btn-primary" onclick="gerarAssinatura()" id="btn-assinar">
+                    Gerar Assinatura Digital
+                </button>
+
+                <div id="resultado-assinatura" class="result-box" style="display: none;">
+                    <div class="result-header">✅ Assinatura Concluída!</div>
+                    <p>Forneça o ID abaixo para verificação externa:</p>
+                    <div class="id-badge">ID: <span id="id-gerado"></span></div>
+                    <small class="hash-text">Hash (SHA-256): <span id="hash-gerado"></span></small>
+                </div>
+            </div>
+
+            <!-- Card: Minhas Assinaturas -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>📜 Minhas Assinaturas Realizadas</h3>
+                    <p>Abaixo estão todos os documentos que você já assinou neste sistema.</p>
+                </div>
+
+                <div class="table-container">
+                    <table class="table-clean">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Data</th>
+                                <th>Conteúdo (Prévia)</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for ass in assinaturas %}
+                            <tr>
+                                <td><span class="id-badge">{{ ass.id }}</span></td>
+                                <td class="text-muted">{{ ass.data_criacao.strftime('%d/%m/%Y %H:%M') }}</td>
+                                <td class="text-truncate">{{ ass.texto }}</td>
+                                <td><span class="status-badge status-valid">Assinado</span></td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="4" class="text-muted text-center">
+                                    Nenhuma assinatura encontrada. Comece assinando seu primeiro documento acima!
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+
+        <!-- Sidebar -->
+        <aside class="sidebar-info">
+            <!-- Card: Perfil -->
+            <div class="card profile-card">
+                <h3>Minha Identidade</h3>
+                <div class="user-badge">
+                    <div class="avatar">{{ session['username'][0].upper() }}</div>
+                    <span>@{{ session['username'] }}</span>
+                </div>
+                <hr class="divider">
+                <p class="info-text">Sua segurança é baseada em RSA-2048 bits.</p>
+
+                <div class="side-actions">
+                    <a href="/download-chave/publica" target="_blank" class="btn btn-outline">📥 Baixar Chave Pública</a>
+                    <a href="/download-chave/privada" target="_blank" class="btn btn-outline btn-danger-outline">⚠️ Backup Chave Privada</a>
+                </div>
+            </div>
+
+            <!-- Card: Ajuda -->
+            <div class="card help-card">
+                <h4>Como funciona?</h4>
+                <ul class="help-list">
+                    <li>Assine documentos com sua chave privada.</li>
+                    <li>Compartilhe o ID e sua chave pública.</li>
+                    <li>Qualquer um pode validar a integridade.</li>
+                </ul>
+            </div>
+        </aside>
+
+    </div>
+
+    <!-- Script: Gerar Assinatura -->
+    <script>
+        async function gerarAssinatura() {
+            const texto = document.getElementById('texto-assinatura').value;
+            const btn = document.getElementById('btn-assinar');
+            const resDiv = document.getElementById('resultado-assinatura');
+
+            if (!texto.trim()) {
+                alert("Por favor, insira um texto para assinar.");
+                return;
+            }
+
+            btn.innerText = "Criptografando...";
+            btn.disabled = true;
+
+            try {
+                const response = await fetch('/assinar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ texto: texto })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    resDiv.style.display = "block";
+                    document.getElementById('id-gerado').innerText = data.id;
+                    document.getElementById('hash-gerado').innerText = data.assinatura;
+                    resDiv.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    alert("Erro: " + data.error);
+                }
+            } catch (error) {
+                alert("Erro de conexão.");
+            } finally {
+                btn.innerText = "Gerar Assinatura Digital";
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
