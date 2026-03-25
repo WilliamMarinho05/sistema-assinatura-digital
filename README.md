@@ -1,118 +1,129 @@
-# Sistema de Assinatura Digital
+# ✒️ Sistema de Assinatura Digital Web
 
-## Descrição
-O projeto foi construido visando avaliação e aprendizagem do conhecimento produzido na matéria de "Segurança de Sistemas". No mesmo foram utilizadas tecnologias como Python e SQLite, as quais juntas conseguem fazer um sistema que:
- * Cadastra um usuário para a geração de chaves assimétricas (e as gera).
- * Permite assinatura autenticada, calcula um hash.
- * Armazena desses metadados e consulta publicamente a integridade desses dados por meio do hash gerado. 
- 
- Esse processos todo ainda deve guardar os logs de verificação/consulta.
+## 📖 Descrição
+Este projeto foi desenvolvido para a disciplina de **Segurança de Sistemas**. A aplicação utiliza criptografia assimétrica (**RSA-PSS**) e funções de hash (**SHA-256**) para garantir a autenticidade, integridade e o não-repúdio de documentos digitais.Além disso, o postgres é utilizado para a persistência dos dados funcionando em colaboração com o arquivo "dump_banco.sql" que está na raiz para importação.
 
-## Estrutura do Projeto
+
+O sistema permite:
+* Cadastrar usuários com geração automática de par de chaves (Pública/Privada).
+* Realizar assinaturas digitais de textos.
+* Verificar publicamente se um documento foi alterado após a assinatura.
+* Armazenar logs de auditoria de todas as verificações realizadas.
+
+---
+
+## 📂 Estrutura do Projeto
 
     Sistema-assinatura-digital
-    ├── backend/
+    ├── core/
     │   ├── _pycache_/
     │   │   ├── crypto_web.cpython-313.pyc
     │   │   └── models.cpython-313.pyc
-    │   ├── instance/
-    │   │   └── assinador.db
-    │   ├── templates/
-    │   │   └── index.html
-    │   ├── app.py
     │   ├── crypto_web.py
     │   └── models.py
+    ├── static/
+    │   └── css/
+    │       ├── cadastro.css
+    │       ├── chaves.css
+    │       ├── dashboard.css
+    │       ├── login.css
+    │       ├── style.css
+    │       └── verificar.css
+    ├── templates/
+    │   ├── cadastro.html
+    │   ├── chaves.html
+    │   ├── dashboard.html
+    │   ├── login.html
+    │   └── verificar.html
+    ├── .env
     ├── .gitignore
+    ├── app.py
     ├── dump_banco.sql
     ├── README.md
     └── requirements.txt
 
 
-## Instruções de Instalação
-
-### 📋 Pré-requisitos
-
-Antes de começar, certifique-se de ter instalado em sua máquina:
-* [cite_start]*Python 3.x*: O projeto foi desenvolvido utilizando a linguagem Python[cite: 2].
-* [cite_start]*Pip*: Gerenciador de pacotes do Python para instalar as dependências listadas no requirements.txt[cite: 2].
 
 ---
 
-## 🛠️ Instruções de Instalação
+## 🚀 Como Rodar o Projeto
 
-### 1. Preparar o Ambiente
-Recomenda-se o uso de um ambiente virtual para manter as dependências isoladas:
+### 1. Pré-requisitos
+* **Python 3.x** instalado.
+* Gerenciador de pacotes **pip**.
+
+### 2. Instalação de Dependências
+Abra o terminal na raiz do projeto e execute:
 bash
-# Criar o ambiente virtual
-python -m venv venv
-
-# Ativar o ambiente (Windows)
-venv\Scripts\activate
-
-# Ativar o ambiente (Linux/macOS)
-source venv/bin/activate
-
-[cite_start]Nota: A pasta venv/ já está configurada para ser ignorada pelo Git[cite: 1].
-
-### 2. Instalar Dependências
-Com o ambiente ativo, instale as bibliotecas necessárias (Flask, SQLAlchemy, Cryptography, etc.):
-bash
+pip install python-dotenv
 pip install -r requirements.txt
 
-[cite_start]As principais bibliotecas instaladas incluem Flask (3.1.2), Flask-SQLAlchemy (3.1.1) e cryptography (45.0.7)[cite: 2].
 
----
-
-## 🚀 Etapas para Executar
-
-### 1. Inicialização do Banco de Dados
-O arquivo app.py está configurado para criar automaticamente a estrutura do banco de dados SQLite (assinador.db) dentro da pasta instance/ ao ser iniciado.
-
-### 2. Importação do Dump (Opcional/Recomendado)
-Para carregar os dados de teste, você pode importar o arquivo dump_banco.sql.
-* Como o banco é SQLite, você pode usar uma ferramenta como *SQLite Browser* ou a linha de comando para executar o conteúdo de dump_banco.sql após o arquivo .db ser gerado pela primeira vez.
-
-### 3. Rodar a Aplicação
-Execute o servidor Flask:
+### 3. Execução do Servidor
+Para iniciar a aplicação, execute o comando apontando para o script dentro de app.py:
 bash
 python app.py
 
-A aplicação estará disponível em http://localhost:5000.
+Acesse no navegador: `http://localhost:5000`
 
 ---
 
-## 🔍 Resumo de Endpoints Disponíveis
+## 🔍 Resumo de Endpoints e Exemplos
 
 | Endpoint | Método | Descrição |
 | :--- | :--- | :--- |
-| / | GET | Página principal (Interface Web). |
-| /cadastro | POST | Cadastra usuário e gera chaves RSA. |
-| /assinar | POST | Gera assinatura RSA-PSS com SHA-256. |
-| /verify/<id> | GET | Verifica a validade da assinatura e gera logs. |
+| `/` | GET | Página principal de interação. |
+| `/cadastro` | POST | Gera par de chaves e salva o usuário. |
+| `/login` | POST | Atualiza a aplicação para que as informações privadas do usuário apareçam. |
+| `/assinar` | POST | Gera a assinatura digital RSA-PSS de um texto. |
+| `/verify/<id>` | GET | Valida a integridade da assinatura por ID. |
+
+### 📝 Exemplos de Requisição/Resposta (JSON)
+
+**Fazer login (`POST /login`)**
+* **Request:** `{"username": "William", "senha": "[senha]"}`
+* **Response:** `{"id": 1, "assinatura": "6c7be3f...", "senha_usada": "[senha]"}`
+
+
+**Criar Assinatura (`POST /assinar`)**
+* **Request:** `{"username": "William", "texto": "Conteúdo de Teste"}`
+* **Response:** `{"id": 1, "assinatura": "6c7be3f...", "hash_usado": "SHA-256"}`
+
+**Verificar Assinatura (`GET /verify/1`)**
+* **Response (VÁLIDA):** `{"status": "VÁLIDA", "signatario": "William", "algoritmo": "RSA-PSS-SHA256"}`
 
 ---
 
-## Funcionalidades
-Este projeto possui várias funcionalidades, dentre elas estão principalmente:
-* Cadastro de usuário.
-* Geração de chaves assimétricas.
-* Assinatura por parte do usuário.
-* Geração de hash.
-* Armazenamento de metadados.
-* Verificação pública dos dados.
-* Persistência em banco de dados.
+## 🧪 Casos de Teste (Critérios de Aceitação)
 
-## Casos de teste
-Foram realizados alguns testes, onde foi possível ver a alteração ou não da assinatura. 
+O sistema possui um script de **Auto-Seeding**. Ao iniciar sem um banco pré-existente, ele utiliza o `dump_banco.sql` para carregar os usuários **William, Yara, Beto e Zeuygma**.
 
-É possível verifica-los ao rodar o projeto e olhar em "assinador.db", na pasta instance (ambos serão gerados nesse processo). Nestes casos de teste foram criados três usuários:
-* Fábio
-* William
-* Yara
+### 1. Teste de Validação Positiva
+* **Objetivo:** Provar que o sistema detecta fraudes ou alterações nos dados.
+* **Procedimento:** 
+    1. Entrar em "validar público".
+    2. Digitar ID da assinatura.
+    3. Clicar em verificar.
+    * Como exemplo de validação positiva, podemos usar o ID "125" da signatária "Hellen". Com isso será possível verificar o hash da assinatura.
 
-Os mesmos fizeram quatro assinaturas (exceto Fábio) e várias verificações, as quais seus logs ficaram armazenados no arquivo criado.
+* **Resultado:** O sistema retorna **VÁLIDA**, pois o texto no banco coincide com a assinatura gerada originalmente.
 
-## Desenvolvedores
-*   William Dias Marinho e Yara Fernandes Ribeiro
-## Licença
-Este projeto é de código aberto disponivel para fins educacionais.
+### 2. Teste de Validação Negativa (Integridade Alterada)
+* **Objetivo:** Provar que o sistema detecta fraudes ou alterações nos dados.
+* **Procedimento:** 
+    1. Entrar em "validar público".
+    2. Digitar ID da assinatura.
+    3. Clicar em verificar.
+    * Como exemplo de validação negativa, podemos usar o ID "278" do signatário "Breno". Com isso será possível verificar o hash da assinatura.
+
+* **Resultado:** O sistema retorna **INVÁLIDA**, demonstrando que a assinatura digital não corresponde mais ao conteúdo modificado.
+
+---
+
+
+## 👥 Desenvolvedores
+* **William Dias Marinho**
+* **Yara Fernandes Ribeiro**
+
+
+---
