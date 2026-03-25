@@ -54,17 +54,19 @@ O sistema permite:
 
 ### 2. Instalação de Dependências
 Abra o terminal na raiz do projeto e execute:
-bash
-pip install python-dotenv
-pip install -r requirements.txt
+
+    bash
+    pip install python-dotenv
+    pip install -r requirements.txt
 
 
 ### 3. Execução do Servidor
 Para iniciar a aplicação, execute o comando apontando para o script dentro de app.py:
-bash
-python app.py
 
-Acesse no navegador: `http://localhost:5000`
+    bash
+    python app.py
+    
+    Acesse no navegador: `http://localhost:5000`
 
 ---
 
